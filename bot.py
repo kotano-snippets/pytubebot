@@ -113,5 +113,9 @@ def handle_youtube_link(message) -> list:
     return res
 
 
+def main():
+    bot.polling()
+
+
 if __name__ == "__main__":
-    bot.polling(none_stop=True)
+    main()
