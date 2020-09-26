@@ -40,7 +40,7 @@ def test_get_help(fixt_message):
 
 
 def test_download_video(fixt_shortvideos):
-    expected = fixt_shortvideos[0]
+    expected, _ = fixt_shortvideos
     vpath = str(Path(b.download_video(shorty1)))
     got = open(vpath, 'rb').read()
     assert got == expected

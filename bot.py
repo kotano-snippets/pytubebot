@@ -30,7 +30,9 @@ KB_MAIN = telebot.types.ReplyKeyboardMarkup().add('/help')
 def download_video(url) -> str:
     """Download video from youtube and return path to file."""
     video = pytube.YouTube(url)
+    # Download highest resolution video and save it inside /videos folder.
     vfile = video.streams.get_highest_resolution().download('./videos')
+    # Return path to downloaded file.
     return vfile
 
 
@@ -87,19 +89,26 @@ def handle_youtube_link(message) -> list:
         list: List of sent messages
     """
     cid = message.chat.id
+    # Define regular expression.
+    # Looks for all sentences containing `youtu` word.
+    # `\S` means 'everything except whitespace`.
     regex = r"\S*youtu\S*"
     links = re.findall(regex, message.text)
     res = []
+    # Get video from every link.
     for match in links:
         try:
             video = download_video(match)
+        # If it is not a proper link, continue.
         except pytube.exceptions.RegexMatchError:
             continue
+        # Normalize downloaded video path.
         vnormpath = str(Path(video))
         with open(str(vnormpath), 'rb') as f:
             msg = bot.send_video(
                 cid, f, reply_to_message_id=message.message_id)
         res.append(msg)
+        # Remove downloaded video from local storage.
         os.remove(vnormpath)
     return res
 
